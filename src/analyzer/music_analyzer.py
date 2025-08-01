@@ -3,7 +3,7 @@ Music analysis utilities
 """
 import spotipy
 import logging
-from typing import List, Optional
+from typing import List, Optional, Dict, Any, Tuple
 from src.models.track import Track
 from src.exceptions.spotify_exceptions import SpotifyQuotaExceededError
 from src.exceptions.analysis_exceptions import (
@@ -148,8 +148,8 @@ class MusicAnalyzer:
         """Analyze multiple tracks with progress reporting"""
         print(f"🔍 Analyzing {len(tracks)} tracks...")
         
-        successful_tracks = []
-        failed_tracks = []
+        successful_tracks: List[Track] = []
+        failed_tracks: List[Tuple[Track, str]] = []
         
         for i, track in enumerate(tracks, 1):
             try:
@@ -169,9 +169,9 @@ class MusicAnalyzer:
         
         return successful_tracks
     
-    def get_fallback_status(self) -> dict:
+    def get_fallback_status(self) -> Dict[str, Any]:
         """Get status of fallback services"""
-        status = {
+        status: Dict[str, Any] = {
             'acousticbrainz_configured': self.acousticbrainz is not None,
             'acousticbrainz_available': False,
             'getsongbpm_configured': self.getsongbpm is not None,

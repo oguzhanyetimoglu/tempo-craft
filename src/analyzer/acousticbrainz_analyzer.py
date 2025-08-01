@@ -5,7 +5,7 @@ Provides fallback functionality when Spotify API quota is exceeded.
 
 import requests
 import logging
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Union
 from ..exceptions.analysis_exceptions import (
     BPMAnalysisError, 
     ExternalAPIError, 
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class AcousticBrainzAnalyzer:
     """Handles BPM analysis using AcousticBrainz API as fallback"""
     
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Initialize AcousticBrainz analyzer
         
@@ -225,7 +225,7 @@ class AcousticBrainzAnalyzer:
                     'error': 'MBID not found'
                 }
             
-            info = {
+            info: Dict[str, Union[str, float, None]] = {
                 'artist': artist,
                 'track': track_name,
                 'mbid': mbid,

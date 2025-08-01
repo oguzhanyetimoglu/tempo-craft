@@ -1,16 +1,19 @@
 """
 Exception handling utilities
 """
+from typing import TYPE_CHECKING
 from src.exceptions.spotify_exceptions import SpotifyQuotaExceededError, SpotifyConnectionError, SpotifyAuthenticationError
 from src.exceptions.analysis_exceptions import BPMAnalysisError, GenreAnalysisError
 from src.exceptions.track_exceptions import TrackValidationError, TrackParsingError
-from src.models.track import Track
+
+if TYPE_CHECKING:
+    from src.models.track import Track
 
 class ExceptionHandler:
     """Centralized exception handling"""
     
     @staticmethod
-    def handle_track_analysis(track: Track, error: Exception) -> str:
+    def handle_track_analysis(track: 'Track', error: Exception) -> str:
         """Handle track analysis exceptions and return user-friendly message"""
         
         if isinstance(error, SpotifyQuotaExceededError):

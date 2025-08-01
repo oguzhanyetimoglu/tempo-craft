@@ -47,7 +47,7 @@ class UserInterface:
         return genre_keyword, min_bpm, max_bpm
     
     @staticmethod
-    def display_welcome():
+    def display_welcome() -> None:
         """Display welcome message"""
         print("🎵" + "=" * 50 + "🎵")
         print("     TEMPO CRAFT - Spotify Playlist Creator")
@@ -56,7 +56,7 @@ class UserInterface:
         print()
     
     @staticmethod
-    def display_summary(total_tracks: int, filtered_tracks: int, playlist_name: str):
+    def display_summary(total_tracks: int, filtered_tracks: int, playlist_name: str) -> None:
         """Display operation summary"""
         print("\n📊 Summary")
         print("-" * 30)

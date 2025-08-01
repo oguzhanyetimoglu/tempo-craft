@@ -4,6 +4,7 @@ Spotify authentication module
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import requests
+from typing import Optional
 from config import Config
 from src.exceptions.spotify_exceptions import (
     SpotifyConnectionError, 
@@ -11,12 +12,12 @@ from src.exceptions.spotify_exceptions import (
 )
 
 class SpotifyAuth:
-    def __init__(self):
+    def __init__(self) -> None:
         self.config = Config()
         self.config.validate()
-        self.sp = None
+        self.sp: Optional[spotipy.Spotify] = None
     
-    def connect(self):
+    def connect(self) -> bool:
         """Connect to Spotify API"""
         print("🎵 Connecting to Spotify...")
         
@@ -44,6 +45,6 @@ class SpotifyAuth:
         except Exception as e:
             raise SpotifyConnectionError(f"Unexpected connection error: {e}")
     
-    def get_client(self):
+    def get_client(self) -> Optional[spotipy.Spotify]:
         """Get the Spotify client"""
         return self.sp

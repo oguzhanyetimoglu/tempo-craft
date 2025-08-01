@@ -3,14 +3,14 @@ GetSongBPM.com API integration for BPM analysis
 """
 import requests
 import logging
-from typing import Optional
+from typing import Optional, Dict, Any
 from src.exceptions.analysis_exceptions import ExternalAPIError, BPMAnalysisError
 
 logger = logging.getLogger(__name__)
 
 class GetSongBPMAnalyzer:
-    def __init__(self, api_key: Optional[str] = None):
-        self.base_url = "https://api.getsongbpm.com"
+    def __init__(self, api_key: Optional[str] = None) -> None:
+        self.base_url = "https://api.getsong.co"  # Correct base URL
         self.api_key = api_key or "demo"  # fallback to demo key
         self.session = requests.Session()
         self.session.headers.update({
@@ -37,12 +37,12 @@ class GetSongBPMAnalyzer:
             clean_artist = self._clean_search_term(artist)
             clean_track = self._clean_search_term(track_name)
             
-            # Search for the track
+            # Search for the track - using correct format for "both" type
             search_url = f"{self.base_url}/search/"
             params = {
                 'api_key': self.api_key,
                 'type': 'both',
-                'lookup': f"{clean_artist} {clean_track}"
+                'lookup': f"song:{clean_track} artist:{clean_artist}"  # Correct format
             }
             
             logger.info(f"Searching GetSongBPM for: {clean_artist} - {clean_track}")
@@ -50,22 +50,34 @@ class GetSongBPMAnalyzer:
             
             if response.status_code == 200:
                 data = response.json()
+                logger.debug(f"GetSongBPM response data: {data}")
                 
-                if 'search' in data and data['search']:
-                    # Look for exact or close matches
-                    for result in data['search']:
-                        if self._is_good_match(result, clean_artist, clean_track):
-                            bpm = float(result.get('tempo', 0))
-                            if bpm > 0:
-                                logger.info(f"Found BPM {bpm} for {track_name} via GetSongBPM")
-                                return bpm
+                if 'search' in data:
+                    search_result = data['search']
                     
-                    # If no exact match, try the first result
-                    first_result = data['search'][0]
-                    bpm = float(first_result.get('tempo', 0))
-                    if bpm > 0:
-                        logger.info(f"Found BPM {bpm} for {track_name} via GetSongBPM (first match)")
-                        return bpm
+                    # Check if it's an error response
+                    if isinstance(search_result, dict) and 'error' in search_result:
+                        logger.warning(f"No BPM found for {track_name} via GetSongBPM: {search_result['error']}")
+                        return None
+                    
+                    # Check if it's a list with results
+                    if isinstance(search_result, list) and search_result:
+                        # Look for exact or close matches
+                        for result in search_result:
+                            logger.debug(f"Checking result: {result}")
+                            if self._is_good_match(result, clean_artist, clean_track):
+                                bpm = float(result.get('tempo', 0))
+                                if bpm > 0:
+                                    logger.info(f"Found BPM {bpm} for {track_name} via GetSongBPM")
+                                    return bpm
+                        
+                        # If no exact match, try the first result
+                        first_result = search_result[0]
+                        logger.debug(f"Using first result: {first_result}")
+                        bpm = float(first_result.get('tempo', 0))
+                        if bpm > 0:
+                            logger.info(f"Found BPM {bpm} for {track_name} via GetSongBPM (first match)")
+                            return bpm
                 
                 logger.warning(f"No BPM found for {track_name} via GetSongBPM")
                 return None
@@ -115,10 +127,11 @@ class GetSongBPMAnalyzer:
         
         return cleaned
     
-    def _is_good_match(self, result: dict, target_artist: str, target_track: str) -> bool:
+    def _is_good_match(self, result: Dict[str, Any], target_artist: str, target_track: str) -> bool:
         """Check if the search result is a good match for the target"""
+        # Correct field names based on actual GetSongBPM API response
         result_artist = result.get('artist', {}).get('name', '').lower()
-        result_song = result.get('song', {}).get('title', '').lower()
+        result_song = result.get('title', '').lower()  # Direct title field
         
         target_artist_lower = target_artist.lower()
         target_track_lower = target_track.lower()
