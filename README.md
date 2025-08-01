@@ -145,7 +145,51 @@ tempo-craft/
    From GetSongBPM: 1
 ```
 
-## 🤝 Contributing
+## � Testing
+
+### Running Tests
+
+```bash
+# Run all tests
+python -m pytest tests/ -v
+
+# Run specific test file
+python -m pytest tests/test_unit.py -v
+
+# Run with coverage
+python -m pytest tests/ --cov=src/
+
+# Quick BPM analysis test
+python tests/test_bpm_analysis.py
+```
+
+### Test Structure
+
+```
+tests/
+├── __init__.py
+├── test_unit.py              # Unit tests for models and utilities
+├── test_bpm_analysis.py      # BPM analysis integration tests
+└── test_playlist_creation.py # Playlist creation tests
+```
+
+## 🔧 Development
+
+### Type Checking
+
+```bash
+# Run mypy type checking
+python -m mypy src/ --ignore-missing-imports
+```
+
+### Code Quality
+
+- **Type Hints**: Comprehensive type annotations using Python typing
+- **Error Handling**: Custom exception classes for different failure modes  
+- **Modular Design**: Clean separation between analysis, auth, and playlist logic
+- **Logging**: Detailed logging for debugging and monitoring
+
+## �🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
