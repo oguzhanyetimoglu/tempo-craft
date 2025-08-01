@@ -1,16 +1,8 @@
 """
 Tempo Craft - Spotify BPM Playlist Creator
-Simple main entry point with AcousticBrainz fallback suppor    # Show summary
-    bpm_tracks = [t for t in analyzed_tracks if t.bpm is not None]
-    spotify_bpm = [t for t in bmp_tracks if t.bpm_source == "spotify"]
-    acousticbrainz_bpm = [t for t in bpm_tracks if t.bpm_source == "acousticbrainz"]
-    getsongbpm_bpm = [t for t in bpm_tracks if t.bpm_source == "getsongbpm"]
-    
-    print(f"\n📈 BPM Analysis Summary:")
-    print(f"   Total tracks with BPM: {len(bpm_tracks)}")
-    print(f"   From Spotify: {len(spotify_bpm)}")
-    print(f"   From AcousticBrainz: {len(acousticbrainz_bpm)}")
-    print(f"   From GetSongBPM: {len(getsongbpm_bpm)}")m config import Config
+Simple main entry point with AcousticBrainz fallback support
+"""
+from config import Config
 from src.auth.spotify_auth import SpotifyAuth
 from src.models.track import Track
 from src.analyzer.music_analyzer import MusicAnalyzer
